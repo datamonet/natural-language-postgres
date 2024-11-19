@@ -1,0 +1,19 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model unicorns {
+  id               Int     @id @default(autoincrement())
+  company          String  @unique
+  valuation        Float
+  date_joined      DateTime?
+  country          String
+  city             String
+  industry         String
+  select_investors String
+}

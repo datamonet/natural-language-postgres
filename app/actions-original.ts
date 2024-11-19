@@ -2,11 +2,9 @@
 
 import { Config, configSchema, explanationsSchema, Result } from "@/lib/types";
 import { openai } from "@ai-sdk/openai";
-import { PrismaClient } from '@prisma/client';
+import { sql } from "@vercel/postgres";
 import { generateObject } from "ai";
 import { z } from "zod";
-
-const prisma = new PrismaClient();
 
 export const generateQuery = async (input: string) => {
   "use server";
@@ -86,8 +84,7 @@ export const runGenerateSQLQuery = async (query: string) => {
 
   let data: any;
   try {
-    console.log("Running query:", query);
-    data = await prisma.$queryRawUnsafe(query);
+    data = await sql.query(query);
   } catch (e: any) {
     if (e.message.includes('relation "unicorns" does not exist')) {
       console.log(
@@ -100,7 +97,7 @@ export const runGenerateSQLQuery = async (query: string) => {
     }
   }
 
-  return data as Result[];
+  return data.rows as Result[];
 };
 
 export const explainQuery = async (input: string, sqlQuery: string) => {
@@ -185,7 +182,7 @@ export const generateChartConfig = async (
     const updatedConfig: Config = { ...config, colors };
     return { config: updatedConfig };
   } catch (e) {
-    // @ts-expect-error
+    // @ts-expect-errore
     console.error(e.message);
     throw new Error("Failed to generate chart suggestion");
   }

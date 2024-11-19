@@ -113,3 +113,69 @@ To learn more about the technologies used in this project, check out the followi
 - [ShadcnUI](https://ui.shadcn.com/)
 - [Tailwind CSS](https://tailwindcss.com/docs)
 - [Recharts](https://recharts.org/en-US/)
+
+
+## Our Notes
+
+Step 1: Install Prisma and Initialize
+Run the following commands in your terminal:
+
+```
+npm install @prisma/client
+npx prisma init
+```
+
+Step 2: Define the Prisma Schema
+Edit the prisma/schema.prisma file to define the unicorns table:
+
+NOTE: this table name must match the one in the prompt!!!
+
+```
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model unicorns {
+  id               Int     @id @default(autoincrement())
+  company          String  @unique
+  valuation        Float
+  date_joined      DateTime?
+  country          String
+  city             String
+  industry         String
+  select_investors String
+}
+```
+
+Step 3: Set Up Environment Variables
+Make sure your .env file contains the connection string to your local PostgreSQL database:
+
+A new `bi` database using `public` schema.
+
+```
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/bi?schema=public"
+```
+
+Step 4: Run Prisma Migrate
+Run the following commands to apply the schema to your database:
+
+```
+npx prisma migrate dev --name init
+```
+
+Step 5: Seed the database with CSV file
+
+```
+pnpm run seed
+```
+
+Step 6: Run the app
+
+```
+pnpm run dev
+```
